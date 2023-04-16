@@ -4,15 +4,26 @@
 from src import Comentario as c
 from src import utilidades as u
 
-PalabrasPositivas, PalabrasNegativas = u.CargarDiccionarios()
+dicPositivo = u.CargarDiccionario(u.RUTA_PALBRAS_POSITIVAS)
+dicNegativo = u.CargarDiccionario(u.RUTA_PALBRAS_NEGATIVAS)
 
-print(len(PalabrasPositivas))
-print(len(PalabrasNegativas))
+print("-------------------------------------")
+print("Diccionarios cargados")
+print("Palabras positivas: ",len(dicPositivo))
+print("Palabras negativas: ",len(dicNegativo))
+print("-------------------------------------")
 
 comentarios = u.CargarComentarios()
+print("Comentarios cargados: ",len(comentarios))
+print("-------------------------------------")
+
 
 for x in comentarios:
-
-    x.Calificar()
+    print("\n-------------------------------------")
+    txt=x.texto
+    x.nPalabrasPositivas, frasesP = u.analizar(dicPositivo,txt)
+    x.nPalabrasNegativas, frasesN = u.analizar(dicNegativo,txt)
     x.Imprimir()
-    print("\n------------------------")
+    print("frases Positivas:",frasesP)
+    print("frases Negativas:",frasesN)
+

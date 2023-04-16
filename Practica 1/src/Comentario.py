@@ -1,25 +1,27 @@
-# clase comentario
+# clase Comentario
 
 class Comentario:
     #Atributos
-    FechaPublicacion="12/04/2023"
-    Autor=""
-    Comentario= ""
-    NumEstrellas=""
-    Aplicacion=""
-    Tipo="" #Bueno o mal comentario
-    NPNegativas=0 #Numero de palabras negativas
-    NPPositivas=0 #Numero de palbras positivas
+    fecha="12/04/2023"
+    autor=""
+    texto=""
+    nEstrellas=""
+    aplicacion=""
+    tipo="" #Bueno o mal texto
+    nPalabrasNegativas=0 #Numero de palabras negativas
+    nPalabrasPositivas=0 #Numero de palbras positivas
 
     
     
     def __init__(self):
-        self.Tipo="Sin revisar"
+        self.tipo="Sin revisar"
 
     def Imprimir(self):
-        msg="Fecha de publicacion : {0} \nAplicación: {1}\nNumero de estrellas: {2}\nComentario:\n{3}".format(self.FechaPublicacion,self.Aplicacion,self.NumEstrellas,self.Comentario) #Formateando los valores
+        msg="Fecha de publicacion : {0} \nAplicación: {1}\nNumero de estrellas: {2}\ntexto:\n{3}".format(self.fecha,self.aplicacion,self.nEstrellas,self.texto) #Formateando los valores
         print(msg)
+        print("Numero de palabras positivas: ",self.nPalabrasPositivas)
+        print("Numero de palabras negativas: ",self.nPalabrasNegativas)
 
-    def Calificar(self):
-        print("Se ha calificado")
+   
+    
     
