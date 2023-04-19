@@ -17,13 +17,18 @@ comentarios = u.CargarComentarios()
 print("Comentarios cargados: ",len(comentarios))
 print("-------------------------------------")
 
-
-for x in comentarios:
+while True:
     print("\n-------------------------------------")
-    txt=x.texto
-    x.nPalabrasPositivas, frasesP = u.analizar(dicPositivo,txt)
-    x.nPalabrasNegativas, frasesN = u.analizar(dicNegativo,txt)
-    x.Imprimir()
-    print("frases Positivas:",frasesP)
-    print("frases Negativas:",frasesN)
+    n=int(input("Numero de comenatrio: "))
+    b,m,fp,fn= u.analizar(comentarios[n].texto)
+    
+    comentarios[n].nPalabrasNegativas=m #Numero de palabras negativas
+    comentarios[n].nPalabrasPositivas=b #Numero de palbras positivas
+    comentarios[n].frasesP=fp
+    comentarios[n].frasesN=fn
+    
+    comentarios[n].Imprimir()
+
+
+
 

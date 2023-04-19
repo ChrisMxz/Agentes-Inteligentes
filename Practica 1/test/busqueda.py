@@ -1,7 +1,31 @@
+import re
+from unicodedata import normalize
+import string
 
-lista = ['cereza', 'fresa', 'limón', 'manzana  \n', 'naranja', 'plátano', 'tomate'] 
+def formatear(cadena):
+    # -> NFD y eliminar diacríticos
+    cadena = re.sub(
+            r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+", r"\1", 
+            normalize( "NFD", cadena), 0, re.I
+        )
+    cadena = re.sub(r'[.,"\'-?¿:¡!;{}()_]', '', cadena)
+    caracters = '[%s]+' % re.escape(string.punctuation+string.digits)
+    cadena = re.sub(caracters, '', cadena)
+    # -> NFC
+    cadena = normalize( 'NFC', cadena)
+    cadena= cadena.strip()
+    return(cadena)
+
+lista = ['cereza', 'fresa', 'limón', 'manzana!  \n', 'naranja\n', 'plátano?', 'tomate','fresa'] 
 medio = int(len(lista)/2)
-elemento_de_interes = 'manzana'
+
+print(lista)
+for x in range(0,len(lista)):
+    msg=formatear(lista[x])
+    lista[x]=msg
+    
+print (lista)
+elemento_de_interes = 'tomate'
 
 def buscar(arreglo, busqueda, izquierda, derecha):
     if izquierda > derecha:
@@ -16,3 +40,4 @@ def buscar(arreglo, busqueda, izquierda, derecha):
         return buscar(arreglo, busqueda, indiceDelElementoDelMedio + 1, derecha)
     
 print(buscar(lista, elemento_de_interes, 0,len(lista)-1))
+print(lista[buscar(lista, elemento_de_interes, 0,len(lista)-1)])

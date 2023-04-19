@@ -12,6 +12,7 @@ CARPETA_RECURSOS = os.path.abspath('Practica 1/recursos')  #ruta carpeta recurso
 RUTA_PALBRAS_NEGATIVAS =  os.path.join(CARPETA_RECURSOS,"palabras-negativas.txt") #ruta palabras negativas
 RUTA_PALBRAS_POSITIVAS = os.path.join(CARPETA_RECURSOS,"palabras-positivas.txt")  #ruta palabras positivas
 RUTA_COMENTARIOS = os.path.join(CARPETA_RECURSOS,"opiniones.xlsx")  #Ruta de comentarios
+RUTA_COMENTARIOS2 = os.path.join(CARPETA_RECURSOS,"Datos opiniones Facebook (1).xlsx")  #Ruta de comentarios
 
 """Cargar los diccionarios correspondientes
     Palabras Positivas , Palabras negativas
@@ -28,8 +29,10 @@ def CargarDiccionario(ruta):
         diccionario= archivo.readlines()
         archivo.close
 
-    for i in diccionario:
-        i=formatear(i)
+    for x in range(0,len(diccionario)):
+        msg=formatear(diccionario[x].replace("\n", ""))
+        diccionario[x]=msg
+
 
     diccionario = set(diccionario) #Quitando palabras repetidas
     diccionario=list(diccionario)#volviendo a listas
@@ -38,7 +41,7 @@ def CargarDiccionario(ruta):
 
 #Carga todos los comentarios del archivo excel
 def CargarComentarios():
-    datos_excel = pd.read_excel(RUTA_COMENTARIOS)
+    datos_excel = pd.read_excel(RUTA_COMENTARIOS2)
     listaComentarios=[]
     # Lectura de los datos 
     datos = pd.DataFrame(datos_excel, columns=['Fecha de publicacion','Autor de la publicacion','Comentario','Numero de estrellas','Nombre de la aplicacion'])
@@ -63,7 +66,7 @@ def buscar(arreglo, busqueda, izquierda, derecha):
     if izquierda > derecha:
         return -1
     indiceDelElementoDelMedio = (izquierda + derecha) // 2
-    elementoDelMedio = arreglo[indiceDelElementoDelMedio].strip()
+    elementoDelMedio = arreglo[indiceDelElementoDelMedio].rstrip()
     if elementoDelMedio == busqueda:
         print(elementoDelMedio)
         return indiceDelElementoDelMedio
@@ -72,15 +75,47 @@ def buscar(arreglo, busqueda, izquierda, derecha):
     else:
         return buscar(arreglo, busqueda, indiceDelElementoDelMedio + 1, derecha)
 
-def analizar(diccionario, comentario):
-    cuenta=0
-    frases=[]
-    for i in range(0,len(diccionario)):
-        if diccionario[i].strip() in comentario:
-            frases.append(diccionario[i].strip())
-            cuenta=cuenta+1
+def analizar(comentario):
+    positivos=CargarDiccionario(RUTA_PALBRAS_POSITIVAS)
+    negativos=CargarDiccionario(RUTA_PALBRAS_NEGATIVAS)
+    cuentaBuena=0
+    cuentaMala = 0 
+    frasesP=[]
+    frasesN=[]
+    comentario = comentario.split()
+    for i in comentario:
+        try:
+            frasesP.append(positivos[positivos.index(i)])   
+            cuentaBuena= cuentaBuena + 1
+            
+        except:
+            try:
+                frasesN.append(negativos[negativos.index(i)])
+                cuentaMala= cuentaMala + 1
+               
+            except:
+                continue
+    
+    return cuentaBuena,cuentaMala,frasesP,frasesN
 
-    return(cuenta,frases)
+def analizar2(comentario):
+    positivos=CargarDiccionario(RUTA_PALBRAS_POSITIVAS)
+    negativos=CargarDiccionario(RUTA_PALBRAS_NEGATIVAS)
+    txt=comentario.texto
+    txt = txt.split()
+    for i in txt:
+        try:
+            comentario.frasesP.append(positivos[positivos.index(i)])
+            comentario.nPalabrasPositivas= comentario.nPalabrasPositivas + 1
+            
+        except:
+            try:
+                comentario.frasesN.append(negativos[negativos.index(i)])
+                comentario.nPalabrasNegativas = comentario.nPalabrasNegativas + 1
+                
+            except:
+                continue
+    comentario.Imprimir()
 
 def formatear(cadena):
     # -> NFD y eliminar diacríticos
