@@ -1,5 +1,6 @@
 #Utilidades 
 
+import matplotlib.pyplot as plt
 import os
 import pandas as pd
 from src import Comentario as com
@@ -13,6 +14,11 @@ RUTA_PALBRAS_NEGATIVAS =  os.path.join(CARPETA_RECURSOS,"palabras-negativas.txt"
 RUTA_PALBRAS_POSITIVAS = os.path.join(CARPETA_RECURSOS,"palabras-positivas.txt")  #ruta palabras positivas
 RUTA_COMENTARIOS = os.path.join(CARPETA_RECURSOS,"opiniones.xlsx")  #Ruta de comentarios
 RUTA_COMENTARIOS2 = os.path.join(CARPETA_RECURSOS,"Datos opiniones Facebook (1).xlsx")  #Ruta de comentarios
+
+#Colores
+ROJO= "#cd6155"
+AZUL= "#2e86c1"
+GRIS= "#616a6b"
 
 """Cargar los diccionarios correspondientes
     Palabras Positivas , Palabras negativas
@@ -40,8 +46,8 @@ def CargarDiccionario(ruta):
     return(diccionario)
 
 #Carga todos los comentarios del archivo excel
-def CargarComentarios():
-    datos_excel = pd.read_excel(RUTA_COMENTARIOS2)
+def CargarComentarios(ruta):
+    datos_excel = pd.read_excel(ruta)
     listaComentarios=[]
     # Lectura de los datos 
     datos = pd.DataFrame(datos_excel, columns=['Fecha de publicacion','Autor de la publicacion','Comentario','Numero de estrellas','Nombre de la aplicacion'])
@@ -52,9 +58,9 @@ def CargarComentarios():
         #Depositando los datos en el objeto Comentario
         comentario.fecha=datos.values[fila,0]
         comentario.autor=datos.values[fila,1]
-        txt=datos.values[fila,2].lower()
+        txt=datos.values[fila,2].lower()#Convirtiendo a minusculas
         txt=formatear(txt)
-        comentario.texto=txt #Convirtiendo a minusculas
+        comentario.texto=txt
         comentario.nEstrellas=datos.values[fila,3]
         comentario.aplicacion=datos.values[fila,4]
 
@@ -75,48 +81,6 @@ def buscar(arreglo, busqueda, izquierda, derecha):
     else:
         return buscar(arreglo, busqueda, indiceDelElementoDelMedio + 1, derecha)
 
-def analizar(comentario):
-    positivos=CargarDiccionario(RUTA_PALBRAS_POSITIVAS)
-    negativos=CargarDiccionario(RUTA_PALBRAS_NEGATIVAS)
-    cuentaBuena=0
-    cuentaMala = 0 
-    frasesP=[]
-    frasesN=[]
-    comentario = comentario.split()
-    for i in comentario:
-        try:
-            frasesP.append(positivos[positivos.index(i)])   
-            cuentaBuena= cuentaBuena + 1
-            
-        except:
-            try:
-                frasesN.append(negativos[negativos.index(i)])
-                cuentaMala= cuentaMala + 1
-               
-            except:
-                continue
-    
-    return cuentaBuena,cuentaMala,frasesP,frasesN
-
-def analizar2(comentario):
-    positivos=CargarDiccionario(RUTA_PALBRAS_POSITIVAS)
-    negativos=CargarDiccionario(RUTA_PALBRAS_NEGATIVAS)
-    txt=comentario.texto
-    txt = txt.split()
-    for i in txt:
-        try:
-            comentario.frasesP.append(positivos[positivos.index(i)])
-            comentario.nPalabrasPositivas= comentario.nPalabrasPositivas + 1
-            
-        except:
-            try:
-                comentario.frasesN.append(negativos[negativos.index(i)])
-                comentario.nPalabrasNegativas = comentario.nPalabrasNegativas + 1
-                
-            except:
-                continue
-    comentario.Imprimir()
-
 def formatear(cadena):
     # -> NFD y eliminar diacríticos
     cadena = re.sub(
@@ -131,12 +95,20 @@ def formatear(cadena):
 
     return(cadena)
 
-def formatear2(cadena):
-    cadena = re.sub(r"[^a-zA-Z0-9]"," ",normalize( "NFD", cadena), 0, re.I)
-    cadena = normalize( 'NFC', cadena)
+def graficar(datos):
+    if datos[0]<=0 and datos[1]<=0:
+        return
 
-    return(cadena)
-
+    etiquetas = ["Positivas","Negativas"]
+    colores = [AZUL ,ROJO]
+    #DIBUJAMOS GRÁFICA.  
+    plt.pie(datos, labels = etiquetas, colors=colores,
+            startangle=90, explode = (0.1, 0.1),
+            radius = 1.2, autopct = '%1.2f%%')
+    #TITULO
+    plt.title('Analisis de palabras')
+    #MOSTRAMOS GRÁFICA.
+    plt.show()
 
     
 
