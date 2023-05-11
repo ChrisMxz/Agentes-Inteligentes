@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Node modulos
+Practica 2/node_modules
+Practica 2/package-lock.json
